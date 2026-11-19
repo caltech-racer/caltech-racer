@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caltech Racer: Autonomous Racing</title>
+  <meta name="description" content="Course website for Caltech Racer, a two-term autonomous racing course from the Autonomous Robotics and Controls Lab.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+
+<style>
+/* =====================================================================
+   EDIT COLORS HERE
+   ===================================================================== */
+:root {
+  --paper:   #F7F9FC;   /* page background */
+  --surface: #FFFFFF;   /* tables, panels */
+  --ink:     #0E1F3A;   /* headings, main text, intro background (car's navy) */
+  --slate:   #55607A;   /* secondary text */
+  --rule:    #DCE2EC;   /* borders and lines */
+  --blue:    #1B6FB5;   /* links (car's racing blue) */
+  --orange:  #F26B21;   /* Caltech orange: accents */
+
+  --sans:  "Schibsted Grotesk", system-ui, sans-serif;
+  --serif: "Source Serif 4", Georgia, serif;
+  --max: 1120px;
+  --bar: 68px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: var(--blue); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+
+/* ---------------- Top bar with tabs ---------------- */
+.topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 30; background: rgba(247,249,252,.94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule); transition: background .25s, border-color .25s; }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: var(--bar); gap: 24px; }
+.brand { font-weight: 800; font-size: 1.05rem; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand span { font-weight: 500; color: var(--slate); margin-left: 8px; }
+.tabs { display: flex; gap: 4px; }
+.tabs a { font-size: .95rem; font-weight: 600; color: var(--slate); text-decoration: none; padding: 9px 14px; border-radius: 9px; white-space: nowrap; }
+.tabs a:hover { color: var(--ink); background: rgba(16,33,63,.05); }
+.tabs a[aria-current="page"] { color: var(--ink); background: rgba(16,33,63,.08); }
+
+/* Over the intro screen the bar is transparent with white text */
+body.over-hero .topbar { background: transparent; border-color: transparent; backdrop-filter: none; }
+body.over-hero .brand, body.over-hero .tabs a { color: rgba(255,255,255,.88); }
+body.over-hero .brand span { color: rgba(255,255,255,.6); }
+body.over-hero .tabs a:hover { color: #fff; background: rgba(255,255,255,.12); }
+
+/* ---------------- Views (one per tab) ---------------- */
+.view { display: none; }
+.view.active { display: block; }
+.page { padding: calc(var(--bar) + 64px) 0 104px; }
+.page-head { margin-bottom: 44px; max-width: 40em; }
+h1.page-title { font-size: clamp(2.2rem, 4.5vw, 3.2rem); line-height: 1.05; letter-spacing: -.03em; font-weight: 800; margin-bottom: 14px; }
+.page-head p { font-family: var(--serif); font-size: 1.15rem; color: #2A3753; }
+
+h2 { font-size: 1.6rem; letter-spacing: -.02em; font-weight: 800; line-height: 1.2; margin-bottom: 18px; }
+h3 { font-size: 1.1rem; font-weight: 700; margin: 30px 0 12px; }
+.block { margin-top: 64px; padding-top: 56px; border-top: 1px solid var(--rule); }
+.prose { font-family: var(--serif); font-size: 1.1rem; line-height: 1.65; max-width: 38em; }
+.prose p + p { margin-top: 14px; }
+.muted { color: var(--slate); }
+.note { color: var(--slate); margin-bottom: 18px; }
+
+/* ---------------- HOME: full-screen intro ---------------- */
+.hero { position: relative; min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; color: #fff; overflow: hidden;
+  /* Photo shown when there is no video (or while it loads). Navy shows if the photo is missing. */
+  background: var(--ink) url("images/hero.jpg") center 55% / cover no-repeat;
+}
+.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hero-shade { position: absolute; inset: 0; background:
+  linear-gradient(180deg, rgba(8,18,36,.75) 0%, rgba(8,18,36,0) 22%),
+  linear-gradient(90deg, rgba(8,18,36,.88) 0%, rgba(8,18,36,.6) 45%, rgba(8,18,36,.12) 80%),
+  linear-gradient(0deg, rgba(8,18,36,.9) 0%, rgba(8,18,36,0) 45%); }
+@media (max-width: 640px) { .hero-shade { background: linear-gradient(180deg, rgba(8,18,36,.8) 0%, rgba(8,18,36,.25) 30%, rgba(8,18,36,.75) 55%, rgba(8,18,36,.95) 100%); } .hero { background-position: 30% 20%; } }
+.hero .wrap { position: relative; z-index: 2; width: 100%; padding-bottom: 72px; padding-top: calc(var(--bar) + 48px); }
+.hero .code { font-weight: 700; font-size: 1.05rem; color: #FF9A5C; }
+.hero h1 { font-size: clamp(2.8rem, 7.5vw, 6rem); line-height: .98; letter-spacing: -.035em; font-weight: 800; margin: 12px 0 0; max-width: 12ch; text-shadow: 0 2px 30px rgba(0,0,0,.35); }
+.hero .sub { font-family: var(--serif); font-size: clamp(1.1rem, 2vw, 1.35rem); color: rgba(255,255,255,.88); margin-top: 16px; max-width: 34em; }
+.hero-facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0; margin-top: 44px; border-top: 1px solid rgba(255,255,255,.25); }
+.hero-facts div { padding: 20px 56px 0 0; }
+.hero-facts dt { font-size: .9rem; color: rgba(255,255,255,.65); margin-bottom: 4px; }
+.hero-facts dd { font-size: 1.15rem; font-weight: 600; }
+.video-toggle { position: absolute; right: 28px; bottom: 28px; z-index: 3; width: 42px; height: 42px; border-radius: 50%; border: 1px solid rgba(255,255,255,.45); background: rgba(0,0,0,.25); color: #fff; cursor: pointer; display: none; place-items: center; }
+.video-toggle svg { width: 14px; height: 14px; fill: currentColor; }
+.hero.has-video .video-toggle { display: grid; }
+
+/* ---------------- HOME: overview ---------------- */
+.overview { padding: 96px 0 104px; }
+.overview .wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 72px; align-items: start; }
+.overview .lede { font-family: var(--serif); font-size: 1.4rem; line-height: 1.5; margin-bottom: 18px; }
+ol.prereq { font-family: var(--serif); font-size: 1.08rem; margin: 6px 0 0 1.4em; line-height: 1.9; }
+.side { background: var(--surface); border: 1px solid var(--rule); border-radius: 16px; padding: 26px 28px; }
+.side h3 { margin-top: 0; }
+.jump { list-style: none; margin-top: 8px; }
+.jump li { border-top: 1px solid var(--rule); }
+.jump a { display: block; padding: 13px 0; font-weight: 600; color: var(--ink); text-decoration: none; }
+.jump a span { display: block; color: var(--slate); font-weight: 400; font-size: .92rem; margin-top: 1px; }
+.jump a:hover { color: var(--blue); }
+
+/* ---------------- Logistics grid ---------------- */
+.logi { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+.logi div { background: var(--surface); padding: 20px 22px; }
+.logi dt { color: var(--slate); font-size: .9rem; margin-bottom: 4px; }
+.logi dd { font-weight: 600; }
+.logi dd small { display: block; font-weight: 400; color: var(--slate); margin-top: 2px; font-size: .9rem; }
+
+/* ---------------- Tables ---------------- */
+.tablewrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 14px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+th { text-align: left; font-weight: 600; color: var(--slate); padding: 12px 18px; border-bottom: 1px solid var(--rule); white-space: nowrap; font-size: .88rem; }
+td { padding: 14px 18px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td.wk { font-weight: 700; color: var(--ink); width: 60px; }
+td.race { font-weight: 700; }
+tr.racewk td { background: #FFF4EC; }
+td.date { white-space: nowrap; color: var(--slate); }
+td.links a { margin-right: 12px; white-space: nowrap; }
+tr.current td { background: #F1F6FE; }
+.status { display: inline-block; font-size: .8rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.s-open   { background: #E8F0FC; color: var(--blue); }
+.s-soon   { background: #FDEEDC; color: #A85706; }
+.s-closed { background: #EEF0F4; color: var(--slate); }
+.s-later  { color: var(--slate); border: 1px dashed var(--rule); }
+
+/* Next-due banner (Assignments tab) */
+.nextdue { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 20px 22px; margin-bottom: 28px; }
+.nextdue .label { color: var(--slate); }
+.nextdue strong { font-size: 1.15rem; }
+.nextdue .when { color: var(--slate); }
+.countdown { margin-left: auto; font-weight: 700; padding: 6px 14px; border-radius: 999px; background: #E8F0FC; color: var(--blue); }
+.countdown.soon { background: #FDEEDC; color: #A85706; }
+
+/* Calendar embed */
+.cal { border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; background: var(--surface); }
+.cal iframe { display: block; width: 100%; height: 620px; border: 0; }
+.cal-empty { padding: 48px 28px; text-align: center; color: var(--slate); }
+
+/* ---------------- Grading bar ---------------- */
+.gradebar { display: flex; height: 54px; border-radius: 12px; overflow: hidden; margin: 8px 0 18px; }
+.gradebar div { display: flex; align-items: center; padding: 0 14px; color: #fff; font-weight: 700; white-space: nowrap; }
+.g1 { background: var(--blue); } .g2 { background: #5BA3D9; } .g3 { background: var(--ink); } .g4 { background: var(--orange); }
+.gradelist { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 32px; }
+.gradelist li { display: flex; gap: 12px; align-items: baseline; }
+.gradelist i { width: 12px; height: 12px; border-radius: 3px; flex: none; transform: translateY(1px); }
+.gradelist b { min-width: 40px; }
+
+/* ---------------- Team ---------------- */
+.lead { display: flex; gap: 20px; align-items: center; padding: 22px; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; max-width: 560px; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; flex: none; display: grid; place-items: center; font-weight: 700; color: #fff; background: var(--ink); object-fit: cover; }
+.lead .avatar { width: 72px; height: 72px; font-size: 1.3rem; }
+.lead h4, .ta h4 { font-size: 1.05rem; font-weight: 700; }
+.role { color: var(--slate); font-size: .92rem; }
+.tas { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 22px 28px; }
+.ta { display: flex; gap: 14px; align-items: center; }
+.ta .avatar { background: #DCE6F7; color: var(--ink); }
+.ta .avatar.headta { background: var(--orange); color: #fff; }
+
+/* ---------------- Policies ---------------- */
+details { border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); margin-bottom: 10px; }
+summary { cursor: pointer; padding: 18px 22px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-size: 1.4rem; font-weight: 400; color: var(--slate); transition: transform .2s; }
+details[open] summary::after { transform: rotate(45deg); }
+details .prose { padding: 0 22px 20px; font-size: 1.02rem; }
+
+/* ---------------- Resources ---------------- */
+.tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tool { display: block; padding: 22px; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; text-decoration: none; color: var(--ink); }
+.tool:hover { border-color: var(--ink); text-decoration: none; }
+.tool strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
+.tool span { color: var(--slate); font-size: .95rem; }
+.refs { list-style: none; }
+.refs li { padding: 16px 0; border-bottom: 1px solid var(--rule); display: grid; grid-template-columns: 1fr auto; gap: 4px 20px; align-items: baseline; }
+.refs li:last-child { border-bottom: 0; }
+.refs cite { font-family: var(--serif); font-size: 1.1rem; font-style: italic; }
+.refs .by { color: var(--slate); grid-column: 1; }
+.refs a { grid-row: 1 / span 2; grid-column: 2; font-weight: 600; white-space: nowrap; }
+
+/* ---------------- Footer ---------------- */
+footer { border-top: 1px solid var(--rule); padding: 32px 0 48px; color: var(--slate); font-size: .92rem; }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 900px) {
+  :root { --bar: 108px; }
+  .topbar .wrap { flex-direction: column; align-items: stretch; justify-content: center; gap: 6px; padding-top: 10px; padding-bottom: 8px; }
+  .tabs { overflow-x: auto; scrollbar-width: none; margin: 0 -10px; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs a { padding: 8px 10px; font-size: .9rem; }
+  .overview .wrap { grid-template-columns: 1fr; gap: 40px; }
+  .tools { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 20px; }
+  .hero-facts { grid-template-columns: 1fr; }
+  .hero-facts div { padding: 16px 0 0; }
+  .logi, .gradelist { grid-template-columns: 1fr; }
+  .gradebar div { font-size: .8rem; padding: 0 8px; }
+  .countdown { margin-left: 0; }
+  .video-toggle { right: 20px; bottom: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---------------- Added for Caltech Racer ---------------- */
+.terms { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+.term { background: var(--surface); border: 1px solid var(--rule); border-radius: 16px; padding: 24px 26px; border-top: 4px solid var(--blue); }
+.term.b { border-top-color: var(--orange); }
+.term .when { color: var(--slate); font-size: .92rem; }
+.term h3 { margin: 4px 0 10px; font-size: 1.25rem; }
+.term p { font-family: var(--serif); font-size: 1.02rem; line-height: 1.6; }
+.term .final { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); font-family: var(--sans); font-size: .95rem; }
+.learn { list-style: none; margin-top: 4px; }
+.learn li { padding: 10px 0 10px 26px; position: relative; font-family: var(--serif); font-size: 1.05rem; border-bottom: 1px solid var(--rule); }
+.learn li::before { content: ""; position: absolute; left: 2px; top: 19px; width: 12px; height: 3px; background: var(--orange); border-radius: 2px; }
+.termseg { display: inline-flex; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; margin-bottom: 18px; background: var(--surface); }
+.termseg button { font: inherit; font-weight: 600; border: 0; background: none; padding: 9px 16px; color: var(--slate); cursor: pointer; }
+.termseg button + button { border-left: 1px solid var(--rule); }
+.termseg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.termgroup { margin-top: 36px; }
+.termgroup:first-of-type { margin-top: 0; }
+.termgroup h2 { font-size: 1.25rem; }
+.termgroup table { table-layout: fixed; min-width: 640px; }
+.termgroup th:nth-child(2), .termgroup th:nth-child(3) { width: 140px; }
+.termgroup th:nth-child(4) { width: 130px; }
+.tbd { color: var(--slate); font-weight: 500; font-style: italic; }
+@media (max-width: 900px) { .terms { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- =================== TOP BAR =================== -->
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#home">Caltech Racer<span>Winter &amp; Spring 2027</span></a>
+    <nav class="tabs" aria-label="Course pages">
+      <a href="#syllabus">Logistics &amp; Syllabus</a>
+      <a href="#calendar">Calendar</a>
+      <a href="#assignments">Assignments</a>
+      <a href="#resources">Resources</a>
+    </nav>
+  </div>
+</header>
+
+<!-- =====================================================================
+     HOME
+     ===================================================================== -->
+<div class="view" id="view-home">
+
+  <!-- ---------- Full-screen intro ---------- -->
+  <section class="hero" id="hero">
+    <!-- BACKGROUND VIDEO (optional)
+         Put a short, silent clip at videos/hero.mp4 (10–30 s, under ~15 MB).
+         Until then (and while it loads) the racecar photo, images/hero.jpg, is shown.
+         To turn the video off completely, delete the <video> element below. -->
+    <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto" poster="images/hero.jpg">
+      <source src="videos/hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero-shade"></div>
+
+    <div class="wrap">
+      <!-- Add the course number here once it's assigned, e.g. "ME/CS 1XX A/B" -->
+      <div class="code">Autonomous Racing A/B &nbsp;/&nbsp; Winter &amp; Spring 2027</div>
+      <h1>Caltech Racer</h1>
+      <p class="sub">Build the software that drives a racecar at its physical limits, first in simulation and then on real hardware.</p>
+      <!-- Replace "To be announced" with the real details -->
+      <dl class="hero-facts">
+        <div><dt>Lectures</dt><dd>To be announced</dd></div>
+        <div><dt>Room</dt><dd>To be announced</dd></div>
+        <div><dt>Instructor</dt><dd>To be announced</dd></div>
+      </dl>
+    </div>
+
+    <button class="video-toggle" id="videoToggle" type="button" aria-label="Pause background video">
+      <svg viewBox="0 0 14 14" id="pauseIcon"><rect x="2" y="1" width="3.5" height="12" rx="1"/><rect x="8.5" y="1" width="3.5" height="12" rx="1"/></svg>
+      <svg viewBox="0 0 14 14" id="playIcon" hidden><path d="M3 1.5v11l9.5-5.5z"/></svg>
+    </button>
+  </section>
+
+  <!-- ---------- Overview ---------- -->
+  <section class="overview">
+    <div class="wrap">
+      <div>
+        <h2>Overview</h2>
+        <p class="lede">A two-term course that brings the Caltech Racer project into the classroom. You'll develop a high-performance autonomous racing system under uncertainty, from controllers in simulation to a race on physical hardware.</p>
+        <div class="prose">
+          <p>Caltech Racer is the Autonomous Robotics and Controls Lab's (ARCL) entry in the Indy Autonomous Challenge.
+          The course uses the same tools as the research team: a high-fidelity racing simulator built on Assetto Corsa,
+          shared performance benchmarks, and the same racing format used on the track. Students working on advanced
+          projects can also use selected data and sensor recordings from Caltech's AV-24 racecar.</p>
+        </div>
+
+        <div class="terms">
+          <div class="term">
+            <div class="when">Winter term</div>
+            <h3>A: Planning and control in simulation</h3>
+            <p>Teams develop racing trajectories and implement classical, optimization-based and learning-based controllers, then compare lap time, tracking accuracy, safety, computational efficiency and robustness on shared benchmarks.</p>
+            <div class="final"><strong>Final project:</strong> a software race in simulation</div>
+          </div>
+          <div class="term b">
+            <div class="when">Spring term</div>
+            <h3>B: Localization, perception and hardware</h3>
+            <p>Teams run their Winter controllers, or provided baselines, on physical racing hardware, integrating localization, track perception, state estimation and closed-loop control with real sensors.</p>
+            <div class="final"><strong>Final project:</strong> a race on physical hardware</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:44px">What you'll learn</h3>
+        <ul class="learn">
+          <li>Make principled design trade-offs between speed, safety and robustness</li>
+          <li>Diagnose control failures when a vehicle operates near its physical limits</li>
+          <li>Debug an autonomy stack end to end, from sensors to actuation</li>
+          <li>Measure the gap between simulation and the real world: sensor noise, latency and model mismatch</li>
+          <li>Design reproducible experiments and evaluate performance at the system level</li>
+        </ul>
+      </div>
+
+      <aside class="side">
+        <h3>Find your way around</h3>
+        <ul class="jump">
+          <li><a href="#syllabus">Logistics &amp; Syllabus <span>Grading, policies, staff</span></a></li>
+          <li><a href="#calendar">Calendar <span>Weekly topics</span></a></li>
+          <li><a href="#assignments">Assignments <span id="jumpDue">Deadlines</span></a></li>
+          <li><a href="#resources">Resources <span>Simulator, data, readings</span></a></li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+</div>
+
+<!-- =====================================================================
+     LOGISTICS & SYLLABUS
+     ===================================================================== -->
+<div class="view" id="view-syllabus">
+  <div class="wrap page">
+    <div class="page-head">
+      <h1 class="page-title">Logistics &amp; Syllabus</h1>
+      <p>Where and when everything happens, how you're graded, and who to ask.</p>
+    </div>
+
+    <!-- Replace each "To be announced" with the real details -->
+    <dl class="logi">
+      <div><dt>Lectures</dt><dd class="tbd">To be announced</dd></div>
+      <div><dt>Lab sessions</dt><dd class="tbd">To be announced<small>Simulator work in Winter; hardware testing in Spring.</small></dd></div>
+      <div><dt>Office hours</dt><dd><a href="#calendar">See the calendar</a></dd></div>
+      <div><dt>Teams</dt><dd>Formed in week 1<small>Teams carry over from Winter to Spring when possible.</small></dd></div>
+      <div><dt>Questions &amp; announcements</dt><dd><a href="#resources">See course tools</a></dd></div>
+      <div><dt>Contact staff privately</dt><dd><a href="mailto:">Course staff email</a><small>For extensions and accommodations.</small></dd></div>
+    </dl>
+
+    <div class="block">
+      <h2>Grading</h2>
+      <!-- PLACEHOLDER WEIGHTS: the proposal doesn't set these. Widths are the percentages; keep them adding up to 100. -->
+      <div class="gradebar" role="img" aria-label="Labs 40%, benchmark report 15%, final race and write-up 35%, participation 10%">
+        <div class="g1" style="width:40%">40%</div>
+        <div class="g2" style="width:15%">15%</div>
+        <div class="g3" style="width:35%">35%</div>
+        <div class="g4" style="width:10%">10%</div>
+      </div>
+      <ul class="gradelist">
+        <li><i class="g1"></i><b>40%</b><span>Team labs</span></li>
+        <li><i class="g2"></i><b>15%</b><span>Benchmark report comparing your controllers</span></li>
+        <li><i class="g3"></i><b>35%</b><span>Final race and technical write-up</span></li>
+        <li><i class="g4"></i><b>10%</b><span>Participation and peer evaluation</span></li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>Policies</h2>
+      <details>
+        <summary>Teamwork and collaboration</summary>
+        <div class="prose"><p>Labs and races are done in teams. You may discuss approaches with other teams, but each team's code and write-ups must be its own. Each team member submits a short peer evaluation at the end of the term.</p></div>
+      </details>
+      <details>
+        <summary>Hardware and lab safety (Spring)</summary>
+        <div class="prose"><p>Complete the lab safety briefing before working with the racing hardware. Vehicles run only with course staff present, in the designated test area, with an emergency stop within reach.</p></div>
+      </details>
+      <details>
+        <summary>Late work</summary>
+        <div class="prose"><p>Each team has a set number of late days per term for labs. Race days can't be moved, so plan your final testing accordingly.</p></div>
+      </details>
+      <details>
+        <summary>Use of AI tools</summary>
+        <div class="prose"><p>You may use AI assistants to understand concepts and debug code. Disclose any substantial use in your write-up, and be ready to explain every part of your team's code.</p></div>
+      </details>
+      <details>
+        <summary>Accommodations</summary>
+        <div class="prose"><p>If you have accommodations through Caltech Student Wellness Services, email the course staff in the first two weeks so we can plan for labs and race days.</p></div>
+      </details>
+    </div>
+
+    <div class="block">
+      <h2>Teaching team</h2>
+      <!-- Fill in names. To use photos, replace <div class="avatar">…</div> with <img class="avatar" src="images/name.jpg" alt=""> -->
+      <div class="lead">
+        <div class="avatar">?</div>
+        <div>
+          <h4>Instructor name</h4>
+          <div class="role">Instructor, Autonomous Robotics and Controls Lab</div>
+          <a href="mailto:">Email</a>
+        </div>
+      </div>
+      <h3>Teaching assistants</h3>
+      <div class="tas">
+        <div class="ta"><div class="avatar headta">?</div><div><h4>TA name</h4><div class="role">Head TA</div></div></div>
+        <div class="ta"><div class="avatar">?</div><div><h4>TA name</h4><div class="role">TA, simulation</div></div></div>
+        <div class="ta"><div class="avatar">?</div><div><h4>TA name</h4><div class="role">TA, hardware</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     CALENDAR
+     ===================================================================== -->
+<div class="view" id="view-calendar">
+  <div class="wrap page">
+    <div class="page-head">
+      <h1 class="page-title">Calendar</h1>
+      <p>Topics week by week for both terms. Slides and recordings are added after each lecture.</p>
+    </div>
+
+    <div class="termseg" id="termSeg">
+      <button type="button" data-term="A" aria-pressed="true">Winter (A)</button>
+      <button type="button" data-term="B" aria-pressed="false">Spring (B)</button>
+    </div>
+    <p class="note">The current week is highlighted. Race weeks are shaded orange.</p>
+
+    <!-- data-start = the Monday of each week (YYYY-MM-DD). Topics and dates are a draft; edit freely. -->
+    <div class="tablewrap" data-term="A">
+      <table>
+        <thead><tr><th>Week</th><th>Week of</th><th>Topics</th><th>Materials</th></tr></thead>
+        <tbody class="sched">
+          <tr data-start="2027-01-04"><td class="wk">1</td><td class="date">Jan 4</td><td>Course overview; setting up the racing simulator and benchmarks</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-01-11"><td class="wk">2</td><td class="date">Jan 11</td><td>Vehicle dynamics and tire models</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-01-18"><td class="wk">3</td><td class="date">Jan 18</td><td>Racing lines and trajectory optimization</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-01-25"><td class="wk">4</td><td class="date">Jan 25</td><td>Classical path tracking and speed control</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-02-01"><td class="wk">5</td><td class="date">Feb 1</td><td>Optimization-based control: model predictive control</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-02-08"><td class="wk">6</td><td class="date">Feb 8</td><td>Learning-based control</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-02-15"><td class="wk">7</td><td class="date">Feb 15</td><td>Robustness to disturbances and changing vehicle dynamics</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-02-22"><td class="wk">8</td><td class="date">Feb 22</td><td>Benchmarking: lap time, tracking, safety and compute</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-03-01"><td class="wk">9</td><td class="date">Mar 1</td><td>The racing format, strategy and interacting with other cars</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-03-08" class="racewk"><td class="wk">10</td><td class="date">Mar 8</td><td class="race">Final simulation race</td><td class="links"><a href="#">Results</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tablewrap" data-term="B" hidden>
+      <table>
+        <thead><tr><th>Week</th><th>Week of</th><th>Topics</th><th>Materials</th></tr></thead>
+        <tbody class="sched">
+          <tr data-start="2027-03-29"><td class="wk">1</td><td class="date">Mar 29</td><td>The hardware platform; lab safety briefing</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-04-05"><td class="wk">2</td><td class="date">Apr 5</td><td>Sensors, calibration and timing</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-04-12"><td class="wk">3</td><td class="date">Apr 12</td><td>Localization</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-04-19"><td class="wk">4</td><td class="date">Apr 19</td><td>State estimation</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-04-26"><td class="wk">5</td><td class="date">Apr 26</td><td>Track perception</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-03"><td class="wk">6</td><td class="date">May 3</td><td>From simulation to hardware: noise, latency and model mismatch</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-10"><td class="wk">7</td><td class="date">May 10</td><td>Closed-loop control on the car</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-17"><td class="wk">8</td><td class="date">May 17</td><td>System identification with AV-24 data</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-24"><td class="wk">9</td><td class="date">May 24</td><td>Test days and end-to-end debugging</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-31" class="racewk"><td class="wk">10</td><td class="date">May 31</td><td class="race">Final hardware race</td><td class="links"><a href="#">Results</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="block">
+      <h2>Office hours</h2>
+      <!-- GOOGLE CALENDAR: in Google Calendar, open the calendar's Settings, find "Integrate calendar",
+           copy the src URL from the "Embed code", and paste it into data-src below. Leave it empty to show the message instead. -->
+      <div class="cal" id="calBox" data-src="">
+        <div class="cal-empty">The office hours calendar will appear here once it's published.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     ASSIGNMENTS
+     ===================================================================== -->
+<div class="view" id="view-assignments">
+  <div class="wrap page">
+    <div class="page-head">
+      <h1 class="page-title">Assignments</h1>
+      <p>Labs are done in teams and due at 11:59 pm Pacific. Statuses update automatically.</p>
+    </div>
+
+    <div class="nextdue" id="nextdue" aria-live="polite"></div>
+
+    <!-- To add one, copy a row. data-out / data-due use YYYY-MM-DDTHH:MM (24-hour). Dates are a draft. -->
+    <div class="termgroup">
+      <h2>Winter (A): simulation</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Assignment</th><th>Released</th><th>Due</th><th>Status</th></tr></thead>
+          <tbody class="hw">
+            <tr data-out="2027-01-05T09:00" data-due="2027-01-15T23:59"><td><a href="#">Lab 1: Simulator setup and a baseline controller</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+            <tr data-out="2027-01-15T09:00" data-due="2027-01-29T23:59"><td><a href="#">Lab 2: Racing line optimization and path tracking</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+            <tr data-out="2027-01-29T09:00" data-due="2027-02-12T23:59"><td><a href="#">Lab 3: Model predictive control</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+            <tr data-out="2027-02-12T09:00" data-due="2027-02-26T23:59"><td><a href="#">Lab 4: Learning-based control</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+            <tr data-out="2027-02-19T09:00" data-due="2027-03-05T23:59"><td><a href="#">Benchmark report</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+            <tr data-out="2027-02-26T09:00" data-due="2027-03-11T23:59"><td><a href="#">Final simulation race and write-up</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="termgroup">
+      <h2>Spring (B): hardware</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Assignment</th><th>Released</th><th>Due</th><th>Status</th></tr></thead>
+          <tbody class="hw">
+            <tr data-out="2027-03-30T09:00" data-due="2027-04-16T23:59"><td><a href="#">Lab 5: Sensors and localization</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+            <tr data-out="2027-04-16T09:00" data-due="2027-04-30T23:59"><td><a href="#">Lab 6: State estimation and track perception</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+            <tr data-out="2027-04-30T09:00" data-due="2027-05-14T23:59"><td><a href="#">Lab 7: Closed-loop control on hardware</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+            <tr data-out="2027-05-07T09:00" data-due="2027-06-03T23:59"><td><a href="#">Final hardware race and write-up</a></td><td class="date"></td><td class="date"></td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     RESOURCES
+     ===================================================================== -->
+<div class="view" id="view-resources">
+  <div class="wrap page">
+    <div class="page-head">
+      <h1 class="page-title">Resources</h1>
+      <p>The tools you'll use every week, and readings for going deeper.</p>
+    </div>
+
+    <h2>Course tools</h2>
+    <div class="tools">
+      <!-- Replace # with your real links -->
+      <a class="tool" href="#"><strong>Racing simulator</strong><span>Setup guide for ARCL's Assetto Corsa environment</span></a>
+      <a class="tool" href="#"><strong>Starter code</strong><span>Baseline controllers and benchmark scripts</span></a>
+      <a class="tool" href="#"><strong>Discussion</strong><span>Questions and announcements</span></a>
+      <a class="tool" href="#"><strong>Submissions</strong><span>Turn in labs and see grades</span></a>
+      <a class="tool" href="#"><strong>AV-24 data</strong><span>Sensor recordings for advanced projects</span></a>
+      <a class="tool" href="https://www.indyautonomouschallenge.com/"><strong>Indy Autonomous Challenge</strong><span>The racing series Caltech Racer competes in</span></a>
+    </div>
+
+    <div class="block">
+      <h2>Readings</h2>
+      <p class="note">None are required. These are useful background for each part of the course.</p>
+      <ul class="refs">
+        <li><cite>Vehicle Dynamics and Control</cite><span class="by">Rajesh Rajamani</span><a href="#">Details</a></li>
+        <li><cite>Model Predictive Control: Theory, Computation, and Design</cite><span class="by">Rawlings, Mayne &amp; Diehl</span><a href="#">Details</a></li>
+        <li><cite>Planning Algorithms</cite><span class="by">Steven LaValle</span><a href="#">Read online</a></li>
+        <li><cite>Probabilistic Robotics</cite><span class="by">Thrun, Burgard &amp; Fox</span><a href="#">Details</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>Caltech Racer: Autonomous Racing A/B. Autonomous Robotics and Controls Lab, Caltech.</span>
+    <a href="#home">Back to top</a>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   1. Tabs: show one page at a time, based on the address (#syllabus etc.)
+   ===================================================================== */
+const VIEWS = ['home', 'syllabus', 'calendar', 'assignments', 'resources'];
+const tabLinks = document.querySelectorAll('.tabs a');
+
+function show() {
+  const name = location.hash.slice(1);
+  const view = VIEWS.includes(name) ? name : 'home';
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
+  tabLinks.forEach(a => a.getAttribute('href') === '#' + view ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+  document.title = (view === 'home' ? '' : document.querySelector(`.tabs a[href="#${view}"]`).textContent + ' | ')
+                 + 'Caltech Racer: Autonomous Racing';
+  window.scrollTo(0, 0);
+  updateBar();
+}
+window.addEventListener('hashchange', show);
+
+/* Transparent top bar while it sits over the intro screen */
+function updateBar() {
+  const onHome = document.getElementById('view-home').classList.contains('active');
+  const hero = document.getElementById('hero');
+  const over = onHome && window.scrollY < hero.offsetHeight - 80;
+  document.body.classList.toggle('over-hero', over);
+}
+window.addEventListener('scroll', updateBar, { passive: true });
+
+/* =====================================================================
+   2. Background video: show the pause button only if a video actually plays
+   ===================================================================== */
+const video = document.getElementById('heroVideo');
+const toggle = document.getElementById('videoToggle');
+if (video) {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  video.addEventListener('playing', () => document.getElementById('hero').classList.add('has-video'));
+  // If the file is missing, remove the element so the grid background shows
+  video.querySelector('source').addEventListener('error', () => video.remove());
+  if (reduce) { video.removeAttribute('autoplay'); video.pause(); }
+  toggle.addEventListener('click', () => {
+    const paused = video.paused;
+    paused ? video.play() : video.pause();
+    document.getElementById('pauseIcon').hidden = !paused;
+    document.getElementById('playIcon').hidden = paused;
+    toggle.setAttribute('aria-label', paused ? 'Pause background video' : 'Play background video');
+  });
+}
+
+/* =====================================================================
+   3. Assignment dates, statuses and the "Next due" banner
+   ===================================================================== */
+const now = new Date();
+const DAY = 86400000;
+const fmt = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+let next = null;
+document.querySelectorAll('.hw tr').forEach(tr => {
+  const out = new Date(tr.dataset.out), due = new Date(tr.dataset.due), c = tr.children;
+  c[1].textContent = fmt(out);
+  c[2].textContent = fmt(due);
+  let cls, text;
+  if (now < out)                { cls = 's-later';  text = 'Not out yet'; }
+  else if (now > due)           { cls = 's-closed'; text = 'Closed'; }
+  else if (due - now < 3 * DAY) { cls = 's-soon';   text = 'Due soon'; }
+  else                          { cls = 's-open';   text = 'Open'; }
+  c[3].innerHTML = `<span class="status ${cls}">${text}</span>`;
+  if (due > now && (!next || due < next.due)) next = { due, name: c[0].innerHTML, text: c[0].textContent };
+});
+
+const band = document.getElementById('nextdue');
+if (next) {
+  const days = Math.ceil((next.due - now) / DAY);
+  const left = days <= 1 ? 'Due within a day' : `${days} days left`;
+  band.innerHTML = `<span class="label">Next due</span><strong>${next.name}</strong>
+    <span class="when">${fmt(next.due)}, 11:59 pm</span>
+    <span class="countdown ${days <= 3 ? 'soon' : ''}">${left}</span>`;
+  document.getElementById('jumpDue').textContent = `Next: ${next.text}, ${fmt(next.due)}`;
+} else {
+  band.innerHTML = `<span class="label">Nothing left to submit this term.</span>`;
+}
+
+/* Highlight the current week in the lecture schedule */
+document.querySelectorAll('.sched tr').forEach(tr => {
+  const start = new Date(tr.dataset.start + 'T00:00');
+  if (now >= start && now < new Date(start.getTime() + 7 * DAY)) tr.classList.add('current');
+});
+
+/* Calendar term switcher: opens on the current term */
+const termBtns = document.querySelectorAll('#termSeg button');
+function pickTerm(t) {
+  termBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.term === t));
+  document.querySelectorAll('#view-calendar .tablewrap[data-term]').forEach(w => w.hidden = w.dataset.term !== t);
+}
+termBtns.forEach(b => b.addEventListener('click', () => pickTerm(b.dataset.term)));
+pickTerm(now >= new Date('2027-03-20T00:00') ? 'B' : 'A');   // date Spring term takes over
+
+/* =====================================================================
+   4. Google Calendar embed (only if a link was added)
+   ===================================================================== */
+const calBox = document.getElementById('calBox');
+if (calBox.dataset.src) {
+  calBox.innerHTML = `<iframe src="${calBox.dataset.src}" title="Office hours calendar" loading="lazy"></iframe>`;
+}
+
+show();
+</script>
+</body>
+</html>
