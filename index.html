@@ -7,7 +7,7 @@
   <meta name="description" content="Course website for Caltech Racer, a two-term autonomous racing course from the Autonomous Robotics and Controls Lab.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=Roboto:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
 /* =====================================================================
@@ -23,7 +23,7 @@
   --orange:  #F26B21;   /* Caltech orange: accents */
 
   --sans:  "Schibsted Grotesk", system-ui, sans-serif;
-  --serif: "Source Serif 4", Georgia, serif;
+  --serif: "Roboto", system-ui, sans-serif;
   --max: 1120px;
   --bar: 68px;
 }
@@ -92,16 +92,9 @@ h3 { font-size: 1.1rem; font-weight: 700; margin: 30px 0 12px; }
 
 /* ---------------- HOME: overview ---------------- */
 .overview { padding: 96px 0 104px; }
-.overview .wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 72px; align-items: start; }
-.overview .lede { font-family: var(--serif); font-size: 1.4rem; line-height: 1.5; margin-bottom: 18px; }
+.overview .lede, .overview .prose { max-width: 46em; }
+.overview .lede { font-family: var(--serif); font-size: 1.4rem; font-style: italic; line-height: 1.5; margin-bottom: 18px; }
 ol.prereq { font-family: var(--serif); font-size: 1.08rem; margin: 6px 0 0 1.4em; line-height: 1.9; }
-.side { background: var(--surface); border: 1px solid var(--rule); border-radius: 16px; padding: 26px 28px; }
-.side h3 { margin-top: 0; }
-.jump { list-style: none; margin-top: 8px; }
-.jump li { border-top: 1px solid var(--rule); }
-.jump a { display: block; padding: 13px 0; font-weight: 600; color: var(--ink); text-decoration: none; }
-.jump a span { display: block; color: var(--slate); font-weight: 400; font-size: .92rem; margin-top: 1px; }
-.jump a:hover { color: var(--blue); }
 
 /* ---------------- Logistics grid ---------------- */
 .logi { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
@@ -118,6 +111,21 @@ td { padding: 14px 18px; border-bottom: 1px solid var(--rule); vertical-align: t
 tr:last-child td { border-bottom: 0; }
 td.wk { font-weight: 700; color: var(--ink); width: 60px; }
 td.race { font-weight: 700; }
+/* Weekly schedule grid (Calendar tab) */
+.weekwrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 14px; background: var(--rule); margin-top: 8px; }
+.week { display: grid; grid-template-columns: 136px repeat(12, minmax(0, 1fr)); gap: 1px; min-width: 800px; font-size: .9rem; }
+.week > div { background: var(--surface); padding: 6px 10px; }
+.week .wh { text-align: center; font-weight: 600; color: var(--slate); padding: 12px 6px; font-size: .88rem; }
+.week .wt { color: var(--slate); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.week .ev { position: relative; z-index: 1; color: var(--ink); line-height: 1.35; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.week .ev.full { text-align: center; align-items: center; }
+.k-oh, .week .ev.oh { background: #FBEDB5; }
+.k-due, .week .ev.due { background: #F6CBC7; }
+.k-lec, .week .ev.lec { background: #C7EDD6; }
+.k-special, .week .ev.special { background: #E9D4F7; }
+.weeklegend { list-style: none; display: grid; grid-template-columns: 3fr 1.3fr 1.3fr 3fr; gap: 1px; margin-top: 14px; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--rule); font-size: .9rem; }
+.weeklegend li { padding: 7px 10px; text-align: center; }
+@media (max-width: 640px) { .weeklegend { grid-template-columns: 1fr 1fr; } }
 tr.racewk td { background: #FFF4EC; }
 td.date { white-space: nowrap; color: var(--slate); }
 td.links a { margin-right: 12px; white-space: nowrap; }
@@ -137,18 +145,10 @@ tr.current td { background: #F1F6FE; }
 .countdown.soon { background: #FDEEDC; color: #A85706; }
 
 /* Calendar embed */
-.cal { border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; background: var(--surface); }
-.cal iframe { display: block; width: 100%; height: 620px; border: 0; }
-.cal-empty { padding: 48px 28px; text-align: center; color: var(--slate); }
 
 /* ---------------- Grading bar ---------------- */
-.gradebar { display: flex; height: 54px; border-radius: 12px; overflow: hidden; margin: 8px 0 18px; }
-.gradebar div { display: flex; align-items: center; padding: 0 14px; color: #fff; font-weight: 700; white-space: nowrap; }
-.g1 { background: var(--blue); } .g2 { background: #5BA3D9; } .g3 { background: var(--ink); } .g4 { background: var(--orange); }
-.gradelist { list-style: none; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px 32px; }
-.gradelist li { display: flex; gap: 12px; align-items: baseline; }
-.gradelist i { width: 12px; height: 12px; border-radius: 3px; flex: none; transform: translateY(1px); }
-.gradelist b { min-width: 40px; }
+.gradelist { list-style: disc; margin: 8px 0 0 1.4em; }
+.gradelist li { padding: 4px 0; }
 
 /* ---------------- Team ---------------- */
 .lead { display: flex; gap: 20px; align-items: center; padding: 22px; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; max-width: 560px; }
@@ -193,15 +193,13 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   .tabs { overflow-x: auto; scrollbar-width: none; margin: 0 -10px; }
   .tabs::-webkit-scrollbar { display: none; }
   .tabs a { padding: 8px 10px; font-size: .9rem; }
-  .overview .wrap { grid-template-columns: 1fr; gap: 40px; }
   .tools { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .wrap { padding: 0 20px; }
   .hero-facts { grid-template-columns: 1fr; }
   .hero-facts div { padding: 16px 0 0; }
-  .logi, .gradelist { grid-template-columns: 1fr; }
-  .gradebar div { font-size: .8rem; padding: 0 8px; }
+  .logi { grid-template-columns: 1fr; }
   .countdown { margin-left: 0; }
   .video-toggle { right: 20px; bottom: 20px; }
 }
@@ -237,9 +235,9 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 <!-- =================== TOP BAR =================== -->
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="#home">Caltech Racer<span>Winter &amp; Spring 2027</span></a>
+    <a class="brand" href="#home">Caltech Racer<span>WI/SP 27</span></a>
     <nav class="tabs" aria-label="Course pages">
-      <a href="#syllabus">Logistics &amp; Syllabus</a>
+      <a href="#syllabus">Syllabus</a>
       <a href="#calendar">Calendar</a>
       <a href="#assignments">Assignments</a>
       <a href="#resources">Resources</a>
@@ -255,11 +253,11 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   <!-- ---------- Full-screen intro ---------- -->
   <section class="hero" id="hero">
     <!-- BACKGROUND VIDEO (optional)
-         Put a short, silent clip at videos/hero.mp4 (10–30 s, under ~15 MB).
+         Silent clip at videos/hero.webm (keep it under ~15 MB).
          Until then (and while it loads) the racecar photo, images/hero.jpg, is shown.
          To turn the video off completely, delete the <video> element below. -->
     <video class="hero-video" id="heroVideo" autoplay muted loop playsinline preload="auto" poster="images/hero.jpg">
-      <source src="videos/hero.mp4" type="video/mp4">
+      <source src="videos/hero.webm" type="video/webm">
     </video>
     <div class="hero-shade"></div>
 
@@ -272,7 +270,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       <dl class="hero-facts">
         <div><dt>Lectures</dt><dd>To be announced</dd></div>
         <div><dt>Room</dt><dd>To be announced</dd></div>
-        <div><dt>Instructor</dt><dd>To be announced</dd></div>
+        <div><dt>Instructor</dt><dd>Soon-Jo Chung</dd></div>
       </dl>
     </div>
 
@@ -318,55 +316,47 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
           <li>Measure the gap between simulation and the real world: sensor noise, latency and model mismatch</li>
           <li>Design reproducible experiments and evaluate performance at the system level</li>
         </ul>
+
+        <div class="block">
+          <h2>Teaching team</h2>
+          <!-- Fill in names. To use photos, replace <div class="avatar">…</div> with <img class="avatar" src="images/name.jpg" alt=""> -->
+          <div class="lead">
+            <img class="avatar" src="images/soon-jo-chung.jpg" alt="Soon-Jo Chung">
+            <div>
+              <h4>Soon-Jo Chung</h4>
+              <div class="role">Instructor, Autonomous Robotics and Controls Lab</div>
+              <a href="mailto:sjchung@caltech.edu">sjchung@caltech.edu</a>
+            </div>
+          </div>
+          <h3>Teaching assistants</h3>
+          <div class="tas">
+            <div class="ta"><img class="avatar headta" src="images/gilchrist-johnson.jpg" alt="Gilchrist Johnson"><div><h4>Gilchrist Johnson</h4><div class="role">Head TA</div><a href="mailto:gxj@caltech.edu">gxj@caltech.edu</a></div></div>
+            <div class="ta"><img class="avatar" src="images/dami-kim.jpg" alt="Dami Kim"><div><h4>Dami Kim</h4><div class="role">TA</div><a href="mailto:damikim@caltech.edu">damikim@caltech.edu</a></div></div>
+          </div>
+        </div>
       </div>
 
-      <aside class="side">
-        <h3>Find your way around</h3>
-        <ul class="jump">
-          <li><a href="#syllabus">Logistics &amp; Syllabus <span>Grading, policies, staff</span></a></li>
-          <li><a href="#calendar">Calendar <span>Weekly topics</span></a></li>
-          <li><a href="#assignments">Assignments <span id="jumpDue">Deadlines</span></a></li>
-          <li><a href="#resources">Resources <span>Simulator, data, readings</span></a></li>
-        </ul>
-      </aside>
     </div>
   </section>
 </div>
 
 <!-- =====================================================================
-     LOGISTICS & SYLLABUS
+     SYLLABUS
      ===================================================================== -->
 <div class="view" id="view-syllabus">
   <div class="wrap page">
     <div class="page-head">
-      <h1 class="page-title">Logistics &amp; Syllabus</h1>
-      <p>Where and when everything happens, how you're graded, and who to ask.</p>
+      <h1 class="page-title">Syllabus</h1>
     </div>
-
-    <!-- Replace each "To be announced" with the real details -->
-    <dl class="logi">
-      <div><dt>Lectures</dt><dd class="tbd">To be announced</dd></div>
-      <div><dt>Lab sessions</dt><dd class="tbd">To be announced<small>Simulator work in Winter; hardware testing in Spring.</small></dd></div>
-      <div><dt>Office hours</dt><dd><a href="#calendar">See the calendar</a></dd></div>
-      <div><dt>Teams</dt><dd>Formed in week 1<small>Teams carry over from Winter to Spring when possible.</small></dd></div>
-      <div><dt>Questions &amp; announcements</dt><dd><a href="#resources">See course tools</a></dd></div>
-      <div><dt>Contact staff privately</dt><dd><a href="mailto:">Course staff email</a><small>For extensions and accommodations.</small></dd></div>
-    </dl>
 
     <div class="block">
       <h2>Grading</h2>
-      <!-- PLACEHOLDER WEIGHTS: the proposal doesn't set these. Widths are the percentages; keep them adding up to 100. -->
-      <div class="gradebar" role="img" aria-label="Labs 40%, benchmark report 15%, final race and write-up 35%, participation 10%">
-        <div class="g1" style="width:40%">40%</div>
-        <div class="g2" style="width:15%">15%</div>
-        <div class="g3" style="width:35%">35%</div>
-        <div class="g4" style="width:10%">10%</div>
-      </div>
+      <!-- PLACEHOLDER WEIGHTS: the proposal doesn't set these. Keep them adding up to 100. -->
       <ul class="gradelist">
-        <li><i class="g1"></i><b>40%</b><span>Team labs</span></li>
-        <li><i class="g2"></i><b>15%</b><span>Benchmark report comparing your controllers</span></li>
-        <li><i class="g3"></i><b>35%</b><span>Final race and technical write-up</span></li>
-        <li><i class="g4"></i><b>10%</b><span>Participation and peer evaluation</span></li>
+        <li><b>40%</b> Team labs</li>
+        <li><b>15%</b> Benchmark report comparing your controllers</li>
+        <li><b>35%</b> Final race and technical write-up</li>
+        <li><b>10%</b> Participation and peer evaluation</li>
       </ul>
     </div>
 
@@ -378,40 +368,22 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       </details>
       <details>
         <summary>Hardware and lab safety (Spring)</summary>
-        <div class="prose"><p>Complete the lab safety briefing before working with the racing hardware. Vehicles run only with course staff present, in the designated test area, with an emergency stop within reach.</p></div>
+        <div class="prose"><p>.</p></div>
       </details>
       <details>
         <summary>Late work</summary>
-        <div class="prose"><p>Each team has a set number of late days per term for labs. Race days can't be moved, so plan your final testing accordingly.</p></div>
+        <div class="prose"><p>.</p></div>
       </details>
       <details>
         <summary>Use of AI tools</summary>
-        <div class="prose"><p>You may use AI assistants to understand concepts and debug code. Disclose any substantial use in your write-up, and be ready to explain every part of your team's code.</p></div>
+        <div class="prose"><p>.</p></div>
       </details>
       <details>
         <summary>Accommodations</summary>
-        <div class="prose"><p>If you have accommodations through Caltech Student Wellness Services, email the course staff in the first two weeks so we can plan for labs and race days.</p></div>
+        <div class="prose"><p>If you have accommodations through Caltech Student Wellness Services, email the course staff in the first two weeks so we can plan for labs.</p></div>
       </details>
     </div>
 
-    <div class="block">
-      <h2>Teaching team</h2>
-      <!-- Fill in names. To use photos, replace <div class="avatar">…</div> with <img class="avatar" src="images/name.jpg" alt=""> -->
-      <div class="lead">
-        <div class="avatar">?</div>
-        <div>
-          <h4>Instructor name</h4>
-          <div class="role">Instructor, Autonomous Robotics and Controls Lab</div>
-          <a href="mailto:">Email</a>
-        </div>
-      </div>
-      <h3>Teaching assistants</h3>
-      <div class="tas">
-        <div class="ta"><div class="avatar headta">?</div><div><h4>TA name</h4><div class="role">Head TA</div></div></div>
-        <div class="ta"><div class="avatar">?</div><div><h4>TA name</h4><div class="role">TA, simulation</div></div></div>
-        <div class="ta"><div class="avatar">?</div><div><h4>TA name</h4><div class="role">TA, hardware</div></div></div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -422,59 +394,60 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   <div class="wrap page">
     <div class="page-head">
       <h1 class="page-title">Calendar</h1>
-      <p>Topics week by week for both terms. Slides and recordings are added after each lecture.</p>
     </div>
 
     <div class="termseg" id="termSeg">
       <button type="button" data-term="A" aria-pressed="true">Winter (A)</button>
       <button type="button" data-term="B" aria-pressed="false">Spring (B)</button>
     </div>
-    <p class="note">The current week is highlighted. Race weeks are shaded orange.</p>
 
     <!-- data-start = the Monday of each week (YYYY-MM-DD). Topics and dates are a draft; edit freely. -->
     <div class="tablewrap" data-term="A">
       <table>
-        <thead><tr><th>Week</th><th>Week of</th><th>Topics</th><th>Materials</th></tr></thead>
+        <thead><tr><th>Week</th><th>Topics</th><th>Materials</th></tr></thead>
         <tbody class="sched">
-          <tr data-start="2027-01-04"><td class="wk">1</td><td class="date">Jan 4</td><td>Course overview; setting up the racing simulator and benchmarks</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-01-11"><td class="wk">2</td><td class="date">Jan 11</td><td>Vehicle dynamics and tire models</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-01-18"><td class="wk">3</td><td class="date">Jan 18</td><td>Racing lines and trajectory optimization</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-01-25"><td class="wk">4</td><td class="date">Jan 25</td><td>Classical path tracking and speed control</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-02-01"><td class="wk">5</td><td class="date">Feb 1</td><td>Optimization-based control: model predictive control</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-02-08"><td class="wk">6</td><td class="date">Feb 8</td><td>Learning-based control</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-02-15"><td class="wk">7</td><td class="date">Feb 15</td><td>Robustness to disturbances and changing vehicle dynamics</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-02-22"><td class="wk">8</td><td class="date">Feb 22</td><td>Benchmarking: lap time, tracking, safety and compute</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-03-01"><td class="wk">9</td><td class="date">Mar 1</td><td>The racing format, strategy and interacting with other cars</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-03-08" class="racewk"><td class="wk">10</td><td class="date">Mar 8</td><td class="race">Final simulation race</td><td class="links"><a href="#">Results</a></td></tr>
+          <tr data-start="2027-01-04"><td class="wk">1</td><td>Course overview; setting up the racing simulator and benchmarks</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-01-11"><td class="wk">2</td><td>Vehicle dynamics and tire models</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-01-18"><td class="wk">3</td><td>Racing lines and trajectory optimization</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-01-25"><td class="wk">4</td><td>Classical path tracking and speed control</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-02-01"><td class="wk">5</td><td>Optimization-based control: model predictive control</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-02-08"><td class="wk">6</td><td>Learning-based control</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-02-15"><td class="wk">7</td><td>Robustness to disturbances and changing vehicle dynamics</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-02-22"><td class="wk">8</td><td>Benchmarking: lap time, tracking, safety and compute</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-03-01"><td class="wk">9</td><td>The racing format, strategy and interacting with other cars</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-03-08" class="racewk"><td class="wk">10</td><td class="race">Final simulation race</td><td class="links"><a href="#">Results</a></td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="tablewrap" data-term="B" hidden>
       <table>
-        <thead><tr><th>Week</th><th>Week of</th><th>Topics</th><th>Materials</th></tr></thead>
+        <thead><tr><th>Week</th><th>Topics</th><th>Materials</th></tr></thead>
         <tbody class="sched">
-          <tr data-start="2027-03-29"><td class="wk">1</td><td class="date">Mar 29</td><td>The hardware platform; lab safety briefing</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-04-05"><td class="wk">2</td><td class="date">Apr 5</td><td>Sensors, calibration and timing</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-04-12"><td class="wk">3</td><td class="date">Apr 12</td><td>Localization</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-04-19"><td class="wk">4</td><td class="date">Apr 19</td><td>State estimation</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-04-26"><td class="wk">5</td><td class="date">Apr 26</td><td>Track perception</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-05-03"><td class="wk">6</td><td class="date">May 3</td><td>From simulation to hardware: noise, latency and model mismatch</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-05-10"><td class="wk">7</td><td class="date">May 10</td><td>Closed-loop control on the car</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-05-17"><td class="wk">8</td><td class="date">May 17</td><td>System identification with AV-24 data</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-05-24"><td class="wk">9</td><td class="date">May 24</td><td>Test days and end-to-end debugging</td><td class="links"><a href="#">Slides</a></td></tr>
-          <tr data-start="2027-05-31" class="racewk"><td class="wk">10</td><td class="date">May 31</td><td class="race">Final hardware race</td><td class="links"><a href="#">Results</a></td></tr>
+          <tr data-start="2027-03-29"><td class="wk">1</td><td>The hardware platform; lab safety briefing</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-04-05"><td class="wk">2</td><td>Sensors, calibration and timing</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-04-12"><td class="wk">3</td><td>Localization</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-04-19"><td class="wk">4</td><td>State estimation</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-04-26"><td class="wk">5</td><td>Track perception</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-03"><td class="wk">6</td><td>From simulation to hardware: noise, latency and model mismatch</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-10"><td class="wk">7</td><td>Closed-loop control on the car</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-17"><td class="wk">8</td><td>System identification with AV-24 data</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-24"><td class="wk">9</td><td>Test days and end-to-end debugging</td><td class="links"><a href="#">Slides</a></td></tr>
+          <tr data-start="2027-05-31" class="racewk"><td class="wk">10</td><td class="race">Final hardware race</td><td class="links"><a href="#">Results</a></td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="block">
-      <h2>Office hours</h2>
-      <!-- GOOGLE CALENDAR: in Google Calendar, open the calendar's Settings, find "Integrate calendar",
-           copy the src URL from the "Embed code", and paste it into data-src below. Leave it empty to show the message instead. -->
-      <div class="cal" id="calBox" data-src="">
-        <div class="cal-empty">The office hours calendar will appear here once it's published.</div>
-      </div>
+      <h2>Schedule &amp; Office hours</h2>
+      <!-- The slots in this grid are set in the page script: search for WEEK_EVENTS. -->
+      <div class="weekwrap"><div class="week" id="week"></div></div>
+      <ul class="weeklegend">
+        <li class="k-oh">OH = Office hours (TA)</li>
+        <li class="k-due">Quiz/HW</li>
+        <li class="k-lec">Lectures</li>
+        <li class="k-special">Special (one-time) events</li>
+      </ul>
     </div>
   </div>
 </div>
@@ -486,42 +459,6 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   <div class="wrap page">
     <div class="page-head">
       <h1 class="page-title">Assignments</h1>
-      <p>Labs are done in teams and due at 11:59 pm Pacific. Statuses update automatically.</p>
-    </div>
-
-    <div class="nextdue" id="nextdue" aria-live="polite"></div>
-
-    <!-- To add one, copy a row. data-out / data-due use YYYY-MM-DDTHH:MM (24-hour). Dates are a draft. -->
-    <div class="termgroup">
-      <h2>Winter (A): simulation</h2>
-      <div class="tablewrap">
-        <table>
-          <thead><tr><th>Assignment</th><th>Released</th><th>Due</th><th>Status</th></tr></thead>
-          <tbody class="hw">
-            <tr data-out="2027-01-05T09:00" data-due="2027-01-15T23:59"><td><a href="#">Lab 1: Simulator setup and a baseline controller</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-            <tr data-out="2027-01-15T09:00" data-due="2027-01-29T23:59"><td><a href="#">Lab 2: Racing line optimization and path tracking</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-            <tr data-out="2027-01-29T09:00" data-due="2027-02-12T23:59"><td><a href="#">Lab 3: Model predictive control</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-            <tr data-out="2027-02-12T09:00" data-due="2027-02-26T23:59"><td><a href="#">Lab 4: Learning-based control</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-            <tr data-out="2027-02-19T09:00" data-due="2027-03-05T23:59"><td><a href="#">Benchmark report</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-            <tr data-out="2027-02-26T09:00" data-due="2027-03-11T23:59"><td><a href="#">Final simulation race and write-up</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="termgroup">
-      <h2>Spring (B): hardware</h2>
-      <div class="tablewrap">
-        <table>
-          <thead><tr><th>Assignment</th><th>Released</th><th>Due</th><th>Status</th></tr></thead>
-          <tbody class="hw">
-            <tr data-out="2027-03-30T09:00" data-due="2027-04-16T23:59"><td><a href="#">Lab 5: Sensors and localization</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-            <tr data-out="2027-04-16T09:00" data-due="2027-04-30T23:59"><td><a href="#">Lab 6: State estimation and track perception</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-            <tr data-out="2027-04-30T09:00" data-due="2027-05-14T23:59"><td><a href="#">Lab 7: Closed-loop control on hardware</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-            <tr data-out="2027-05-07T09:00" data-due="2027-06-03T23:59"><td><a href="#">Final hardware race and write-up</a></td><td class="date"></td><td class="date"></td><td></td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   </div>
 </div>
@@ -533,29 +470,6 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   <div class="wrap page">
     <div class="page-head">
       <h1 class="page-title">Resources</h1>
-      <p>The tools you'll use every week, and readings for going deeper.</p>
-    </div>
-
-    <h2>Course tools</h2>
-    <div class="tools">
-      <!-- Replace # with your real links -->
-      <a class="tool" href="#"><strong>Racing simulator</strong><span>Setup guide for ARCL's Assetto Corsa environment</span></a>
-      <a class="tool" href="#"><strong>Starter code</strong><span>Baseline controllers and benchmark scripts</span></a>
-      <a class="tool" href="#"><strong>Discussion</strong><span>Questions and announcements</span></a>
-      <a class="tool" href="#"><strong>Submissions</strong><span>Turn in labs and see grades</span></a>
-      <a class="tool" href="#"><strong>AV-24 data</strong><span>Sensor recordings for advanced projects</span></a>
-      <a class="tool" href="https://www.indyautonomouschallenge.com/"><strong>Indy Autonomous Challenge</strong><span>The racing series Caltech Racer competes in</span></a>
-    </div>
-
-    <div class="block">
-      <h2>Readings</h2>
-      <p class="note">None are required. These are useful background for each part of the course.</p>
-      <ul class="refs">
-        <li><cite>Vehicle Dynamics and Control</cite><span class="by">Rajesh Rajamani</span><a href="#">Details</a></li>
-        <li><cite>Model Predictive Control: Theory, Computation, and Design</cite><span class="by">Rawlings, Mayne &amp; Diehl</span><a href="#">Details</a></li>
-        <li><cite>Planning Algorithms</cite><span class="by">Steven LaValle</span><a href="#">Read online</a></li>
-        <li><cite>Probabilistic Robotics</cite><span class="by">Thrun, Burgard &amp; Fox</span><a href="#">Details</a></li>
-      </ul>
     </div>
   </div>
 </div>
@@ -637,16 +551,54 @@ document.querySelectorAll('.hw tr').forEach(tr => {
 });
 
 const band = document.getElementById('nextdue');
-if (next) {
+if (!band) {
+  /* Assignments page is empty: nothing to show */
+} else if (next) {
   const days = Math.ceil((next.due - now) / DAY);
   const left = days <= 1 ? 'Due within a day' : `${days} days left`;
   band.innerHTML = `<span class="label">Next due</span><strong>${next.name}</strong>
     <span class="when">${fmt(next.due)}, 11:59 pm</span>
     <span class="countdown ${days <= 3 ? 'soon' : ''}">${left}</span>`;
-  document.getElementById('jumpDue').textContent = `Next: ${next.text}, ${fmt(next.due)}`;
+  const jump = document.getElementById('jumpDue');
+  if (jump) jump.textContent = `Next: ${next.text}, ${fmt(next.due)}`;
 } else {
   band.innerHTML = `<span class="label">Nothing left to submit this term.</span>`;
 }
+
+/* Weekly schedule grid (Calendar tab).
+   Edit WEEK_EVENTS to change it. from/to are 24-hour clock hours (15 = 3 pm);
+   use from: 24, to: 25 for the 11:59 pm deadline row.
+   kind: 'oh' (office hours), 'due' (quiz/HW), 'lec' (lecture), 'special' (one-time event).
+   half: 'left' or 'right' puts two things side by side in one day; leave it out for the full width.
+   Empty for now: add the real schedule here. */
+const WEEK_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const WEEK_EVENTS = [
+  // Example: { day: 'Monday', from: 15, to: 16, kind: 'lec', text: 'Lecture' },
+];
+(function buildWeek() {
+  const grid = document.getElementById('week');
+  if (!grid) return;
+  const FIRST = 13, LAST = 24;                       // rows: 1 pm ... 11 pm-12 am, then 11:59 pm
+  const h12 = h => ((h + 11) % 12) + 1;
+  const row = h => h - FIRST + 2;                    // grid row (row 1 is the day header)
+  const col = d => 2 + WEEK_DAYS.indexOf(d) * 2;     // each day has two half-columns
+  const add = (cls, r, c, html) => {
+    const el = document.createElement('div');
+    el.className = cls; el.style.gridRow = r; el.style.gridColumn = c; el.innerHTML = html;
+    grid.appendChild(el);
+  };
+  add('wh', 1, 1, '');
+  WEEK_DAYS.forEach(d => add('wh', 1, `${col(d)} / span 2`, d));
+  for (let h = FIRST; h <= LAST; h++) {
+    add('wt', row(h), 1, h === LAST ? '11:59 pm' : `${h12(h)}:00 – ${h12(h + 1)}:00`);
+    WEEK_DAYS.forEach(d => add('', row(h), `${col(d)} / span 2`, ''));
+  }
+  WEEK_EVENTS.forEach(e => {
+    const c = e.half ? `${col(e.day) + (e.half === 'right' ? 1 : 0)} / span 1` : `${col(e.day)} / span 2`;
+    const lines = [].concat(e.text).map(t => `<span>${t}</span>`).join('');
+    add(`ev ${e.kind}${e.half ? '' : ' full'}`, `${row(e.from)} / ${row(e.to)}`, c, lines);
+  });
+})();
 
 /* Highlight the current week in the lecture schedule */
 document.querySelectorAll('.sched tr').forEach(tr => {
@@ -662,14 +614,6 @@ function pickTerm(t) {
 }
 termBtns.forEach(b => b.addEventListener('click', () => pickTerm(b.dataset.term)));
 pickTerm(now >= new Date('2027-03-20T00:00') ? 'B' : 'A');   // date Spring term takes over
-
-/* =====================================================================
-   4. Google Calendar embed (only if a link was added)
-   ===================================================================== */
-const calBox = document.getElementById('calBox');
-if (calBox.dataset.src) {
-  calBox.innerHTML = `<iframe src="${calBox.dataset.src}" title="Office hours calendar" loading="lazy"></iframe>`;
-}
 
 show();
 </script>
